@@ -10,7 +10,7 @@ Pipeline for extracting acoustic features from cough recordings using Python and
 ## Setup
 
 ```powershell
-python -m venv venv
+python3.11 -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 ```
@@ -23,20 +23,24 @@ Analyze a single WAV file and store results under `results/`:
 
 ```powershell
 venv\Scripts\activate
-python src/main.py --input-file tests/test_data/sample.wav --output-dir results
+python -m src.main --input-file tests/test_data/sample.wav --output-dir results
 ```
 
 Analyze every WAV inside a directory:
 
 ```powershell
 venv\Scripts\activate
-python src/main.py --input-dir path\to\wav_folder --output-dir results
+python -m src.main --input-dir path\to\wav_folder --output-dir results
 ```
 
 The pipeline saves:
 
 - `results/features.csv` – aggregated feature table
 - `results/segments/*.wav` – normalized segments extracted by the pipeline
+
+CLI flags:
+- Provide exactly one of `--input-file` or `--input-dir`; the short form `--input` is not supported.
+- Use `--output-dir` to choose where `features.csv` and segment WAVs are written; defaults to `results/`.
 
 ## Testing
 
