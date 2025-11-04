@@ -58,10 +58,10 @@ The implementation will follow the user story priorities defined in the specific
 
 ## Phase 4: Polish & Finalization
 
-- [ ] T029 Add comprehensive docstrings to all functions and modules.
-- [ ] T030 Review and update `README.md` with final usage instructions.
-- [ ] T031 Manually run the pipeline on a few test files to ensure robustness.
-- [ ] T032 Clean up any temporary code or comments.
+- [x] T029 Add comprehensive docstrings to all functions and modules.
+- [x] T030 Review and update `README.md` with final usage instructions.
+- [x] T031 Manually run the pipeline on a few test files to ensure robustness.
+- [x] T032 Clean up any temporary code or comments.
 
 ## Dependencies
 

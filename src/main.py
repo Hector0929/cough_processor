@@ -1,3 +1,5 @@
+﻿"""Command-line entry point and pipeline orchestration for cough analysis."""
+
 from __future__ import annotations
 
 import argparse
@@ -33,6 +35,7 @@ class PipelineConfig:
 
 
 def _collect_audio_files(input_file: str | None, input_dir: str | None) -> list[Path]:
+	"""Resolve and validate the set of input WAV files to process."""
 	if input_file and input_dir:
 		raise ValueError("Specify either --input-file or --input-dir, not both.")
 	if not input_file and not input_dir:
@@ -56,6 +59,7 @@ def _analyze_segment(
 	segment_signal: np.ndarray,
 	config: PipelineConfig,
 ) -> dict[str, float | str]:
+	"""Calculate all configured features for a normalized segment."""
 	length_seconds = features.calculate_length(segment_signal, config.target_sample_rate)
 	rms_energy = features.calculate_rms_energy(segment_signal)
 	zcr = features.calculate_zcr(segment_signal)
@@ -96,6 +100,7 @@ def _process_file(
 	output_dir: Path,
 	config: PipelineConfig,
 ) -> Iterable[dict[str, float | str]]:
+	"""Process a single input file and yield feature records for each segment."""
 	signal, original_rate = audio_io.load_wav(str(audio_path))
 	signal = preprocessing.downsample_signal(signal, original_rate, config.target_sample_rate)
 	signal = preprocessing.normalize_energy(signal)
@@ -177,6 +182,7 @@ def run_pipeline(
 
 
 def _build_parser() -> argparse.ArgumentParser:
+	"""Create the CLI argument parser used by the entry point."""
 	parser = argparse.ArgumentParser(description="Analyze cough audio files and extract features.")
 	group = parser.add_mutually_exclusive_group(required=True)
 	group.add_argument("--input-file", type=str, help="Path to a single WAV file to analyze.")
@@ -186,6 +192,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+	"""Parse CLI arguments, run the pipeline, and return an exit code."""
 	parser = _build_parser()
 	args = parser.parse_args(argv)
 

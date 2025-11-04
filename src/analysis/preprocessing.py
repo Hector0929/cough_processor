@@ -1,3 +1,5 @@
+﻿"""Signal preprocessing utilities for the cough analysis pipeline."""
+
 import numpy as np
 from scipy.signal import resample
 

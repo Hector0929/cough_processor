@@ -1,4 +1,5 @@
-# in src/analysis/features.py
+"""Feature extraction utilities for time-domain and vowel-specific metrics."""
+
 import numpy as np
 import parselmouth
 from parselmouth.praat import call

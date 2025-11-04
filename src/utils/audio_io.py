@@ -1,3 +1,5 @@
+"""Utility helpers for reading and writing WAV audio files."""
+
 import wave
 import numpy as np
 
