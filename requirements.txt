@@ -1,0 +1,5 @@
+praat-parselmouth
+numpy
+pandas
+scipy
+pytest
