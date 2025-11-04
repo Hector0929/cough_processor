@@ -1,9 +1,21 @@
 import numpy as np
 from scipy.signal import resample
 
-# in src/analysis/preprocessing.py
 
-# ... (existing code) ...
+def downsample_signal(signal: np.ndarray, original_rate: int, target_rate: int) -> np.ndarray:
+    """Resample the signal to the target sample rate."""
+    if original_rate == target_rate:
+        return signal
+
+    if original_rate <= 0 or target_rate <= 0:
+        raise ValueError("Sample rates must be positive integers.")
+
+    num_samples = int(len(signal) * target_rate / original_rate)
+    if num_samples <= 0:
+        raise ValueError("Calculated number of samples is non-positive.")
+
+    return resample(signal, num_samples)
+
 
 def segment_by_energy(
     signal: np.ndarray,

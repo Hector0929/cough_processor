@@ -47,14 +47,14 @@ The implementation will follow the user story priorities defined in the specific
 
 ### Sub-phase 3.3: Vowel Feature Calculation
 
-- [ ] T024 [P] [US1] In `tests/unit/test_features.py`, write failing tests for vowel features (F0, HNR, Jitter, Shimmer) from FR-014.
-- [ ] T025 [P] [US1] In `src/analysis/features.py`, implement a separate function `analyze_vowel` to calculate these features.
+- [x] T024 [P] [US1] In `tests/unit/test_features.py`, write failing tests for vowel features (F0, HNR, Jitter, Shimmer) from FR-014.
+- [x] T025 [P] [US1] In `src/analysis/features.py`, implement a separate function `analyze_vowel` to calculate these features.
 
 ### Sub-phase 3.4: Pipeline and Output
 
-- [ ] T026 [US1] Write a failing integration test in `tests/integration/test_pipeline.py` that runs the full process on a sample audio file and checks the output CSV structure.
-- [ ] T027 [US1] Implement the main pipeline logic in `src/main.py` to connect all the modules: load, preprocess, analyze, and save results to a CSV file.
-- [ ] T028 [US1] Refine `src/main.py` to handle command-line arguments for input/output paths as specified in `quickstart.md`.
+- [x] T026 [US1] Write a failing integration test in `tests/integration/test_pipeline.py` that runs the full process on a sample audio file and checks the output CSV structure.
+- [x] T027 [US1] Implement the main pipeline logic in `src/main.py` to connect all the modules: load, preprocess, analyze, and save results to a CSV file.
+- [x] T028 [US1] Refine `src/main.py` to handle command-line arguments for input/output paths as specified in `quickstart.md`.
 
 ## Phase 4: Polish & Finalization
 

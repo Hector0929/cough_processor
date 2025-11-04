@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 from src.analysis import features
+import parselmouth
 
 def test_calculate_length():
     """
@@ -46,3 +47,22 @@ def test_calculate_rms_energy():
 
     # Assert
     assert rms_energy == pytest.approx(1.0)
+
+def test_analyze_vowel():
+    """
+    Test that vowel features are calculated using parselmouth.
+    """
+    # Arrange
+    sample_rate = 16000
+    # Create a synthetic vowel sound
+    sound = parselmouth.Sound("tests/test_data/sample.wav")
+
+    # Act
+    vowel_features = features.analyze_vowel(sound, sample_rate)
+
+    # Assert
+    assert isinstance(vowel_features, dict)
+    assert "F0" in vowel_features
+    assert "HNR" in vowel_features
+    assert "Jitter" in vowel_features
+    assert "Shimmer" in vowel_features

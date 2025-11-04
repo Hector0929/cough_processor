@@ -1,5 +1,7 @@
 # in src/analysis/features.py
 import numpy as np
+import parselmouth
+from parselmouth.praat import call
 
 def calculate_length(segment: np.ndarray, sample_rate: int) -> float:
     """
@@ -42,3 +44,55 @@ def calculate_zcr(signal: np.ndarray) -> float:
     if len(signal) < 2:
         return 0.0
     return np.sum(np.diff(np.sign(signal)) != 0) / (len(signal) - 1)
+
+
+def analyze_vowel(sound: parselmouth.Sound, sample_rate: int | None = None) -> dict[str, float]:
+    """Extracts vowel-based acoustic features using Parselmouth."""
+    if not isinstance(sound, parselmouth.Sound):
+        raise TypeError("sound must be a parselmouth.Sound instance")
+
+    if sample_rate is None:
+        sample_rate = int(sound.sampling_frequency)
+
+    # Fundamental frequency (F0)
+    pitch = sound.to_pitch()
+    frequencies = pitch.selected_array["frequency"]
+    voiced_frequencies = frequencies[frequencies > 0]
+    f0 = float(np.nanmean(voiced_frequencies)) if voiced_frequencies.size else 0.0
+
+    # Harmonics-to-noise ratio (HNR)
+    harmonicity = sound.to_harmonicity_cc()
+    hnr = float(call(harmonicity, "Get mean", 0, 0))
+
+    # Jitter and shimmer require a point process derived from the pitch contour
+    point_process = call(sound, "To PointProcess (periodic, cc)", 75, 500)
+    jitter = float(
+        call(
+            point_process,
+            "Get jitter (local)",
+            0,
+            0,
+            0.0001,
+            0.02,
+            1.3,
+        )
+    )
+    shimmer = float(
+        call(
+            [sound, point_process],
+            "Get shimmer (local)",
+            0,
+            0,
+            0.0001,
+            0.02,
+            1.3,
+            1.6,
+        )
+    )
+
+    return {
+        "F0": max(f0, 0.0),
+        "HNR": hnr,
+        "Jitter": max(jitter, 0.0),
+        "Shimmer": max(shimmer, 0.0),
+    }
