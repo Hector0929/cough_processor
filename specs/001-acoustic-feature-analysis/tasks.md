@@ -38,12 +38,12 @@ The implementation will follow the user story priorities defined in the specific
 
 ### Sub-phase 3.2: Acoustic Feature Calculation
 
-- [ ] T018 [P] [US1] In `tests/unit/test_features.py`, write failing tests for each acoustic feature in FR-009 (Length, Amplitude Contour, etc.).
-- [ ] T019 [P] [US1] In `src/analysis/features.py`, implement functions to calculate each acoustic feature from FR-009 to pass the tests.
-- [ ] T020 [P] [US1] In `tests/unit/test_spectral.py`, write failing tests for spectral features (Relative Energy, Weighted Frequency) from FR-010 and FR-011.
-- [ ] T021 [P] [US1] In `src/analysis/spectral.py`, implement functions to calculate the spectral features to pass the tests.
-- [ ] T022 [P] [US1] In `tests/unit/test_spectral.py`, write failing tests for perturbation features (Salience, Perturbation Percentage) from FR-012 and FR-013.
-- [ ] T023 [P] [US1] In `src/analysis/spectral.py`, implement functions to calculate the perturbation features to pass the tests.
+- [x] T018 [P] [US1] In `tests/unit/test_features.py`, write failing tests for each acoustic feature in FR-009 (Length, Amplitude Contour, etc.).
+- [x] T019 [P] [US1] In `src/analysis/features.py`, implement functions to calculate each acoustic feature from FR-009 to pass the tests.
+- [x] T020 [P] [US1] In `tests/unit/test_spectral.py`, write failing tests for spectral features (Relative Energy, Weighted Frequency) from FR-010 and FR-011.
+- [x] T021 [P] [US1] In `src/analysis/spectral.py`, implement functions to calculate the spectral features to pass the tests.
+- [x] T022 [P] [US1] In `tests/unit/test_spectral.py`, write failing tests for perturbation features (Salience, Perturbation Percentage) from FR-012 and FR-013.
+- [x] T023 [P] [US1] In `src/analysis/spectral.py`, implement functions to calculate the perturbation features to pass the tests.
 
 ### Sub-phase 3.3: Vowel Feature Calculation
 
