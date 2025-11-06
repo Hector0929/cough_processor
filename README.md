@@ -31,6 +31,7 @@ Analyze every WAV inside a directory:
 ```powershell
 venv\Scripts\activate
 python -m src.main --input-dir path\to\wav_folder --output-dir results
+Example: python -m src.main --input-file D:\audio_processor\audio_processor\segments_loudness_processed\4_yi_reflex_01.wav --output-dir D:\cough_processor\results
 ```
 
 The pipeline saves:

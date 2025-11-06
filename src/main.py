@@ -1,4 +1,4 @@
-﻿"""Command-line entry point and pipeline orchestration for cough analysis."""
+"""Command-line entry point and pipeline orchestration for cough analysis."""
 
 from __future__ import annotations
 
@@ -21,7 +21,6 @@ FRAME_LENGTH = int(0.02 * TARGET_SAMPLE_RATE)  # 20 ms windows
 HOP_LENGTH = int(0.01 * TARGET_SAMPLE_RATE)  # 10 ms hop
 MIN_SEGMENT_DURATION = 0.1  # seconds
 ENERGY_THRESHOLD_RATIO = 0.1  # relative to peak energy
-SNR_THRESHOLD_DB = 10.0
 
 
 @dataclass
@@ -31,7 +30,6 @@ class PipelineConfig:
 	hop_length: int = HOP_LENGTH
 	min_segment_duration: float = MIN_SEGMENT_DURATION
 	energy_threshold_ratio: float = ENERGY_THRESHOLD_RATIO
-	snr_threshold_db: float = SNR_THRESHOLD_DB
 
 
 def _collect_audio_files(input_file: str | None, input_dir: str | None) -> list[Path]:
@@ -67,9 +65,23 @@ def _analyze_segment(
 	amplitude_contour = features.calculate_amplitude_contour(
 		segment_signal, config.frame_length, config.hop_length
 	)
+	normalized_contour = features.normalize_contour(amplitude_contour)
 	amplitude_mean = float(np.mean(amplitude_contour)) if amplitude_contour.size else 0.0
+	contour_slope = features.calculate_amplitude_contour_slope(normalized_contour)
+	contour_curvature = features.calculate_amplitude_contour_curvature(normalized_contour)
+	contour_entropy = features.calculate_sample_entropy(normalized_contour)
+	contour_kurtosis = features.calculate_kurtosis(normalized_contour)
+	crest_factor = features.calculate_crest_factor(segment_signal)
+	crest_position = features.calculate_crest_factor_position(normalized_contour)
+	normalized_contour_str = " ".join(f"{value:.6f}" for value in normalized_contour)
 
-	band_limits = [(0, 400), (400, 800), (800, 1_600), (1_600, 3_200), (3_200, config.target_sample_rate // 2)]
+	band_limits = [
+		(0, 400),
+		(400, 800),
+		(800, 1_600),
+		(1_600, 3_200),
+		(3_200, config.target_sample_rate // 2),
+	]
 	relative_energy = spectral.calculate_relative_energy(
 		segment_signal, config.target_sample_rate, band_limits
 	)
@@ -83,6 +95,13 @@ def _analyze_segment(
 		"rms_energy": float(rms_energy),
 		"zcr": float(zcr),
 		"amplitude_mean": amplitude_mean,
+		"amplitude_contour": normalized_contour_str,
+		"amplitude_contour_slope": contour_slope,
+		"amplitude_contour_curvature": contour_curvature,
+		"sample_entropy_contour": contour_entropy,
+		"kurtosis_contour": contour_kurtosis,
+		"crest_factor": crest_factor,
+		"crest_factor_position": crest_position,
 		"F0": vowel_features.get("F0", 0.0),
 		"HNR": vowel_features.get("HNR", 0.0),
 		"Jitter": vowel_features.get("Jitter", 0.0),
@@ -117,10 +136,8 @@ def _process_file(
 		dynamic_threshold,
 		config.min_segment_duration,
 	)
-	segments = preprocessing.filter_by_snr(signal, segments, config.snr_threshold_db)
-
 	if not segments:
-		return []
+		segments = [(0, len(signal))]
 
 	segment_dir = output_dir / "segments"
 	segment_dir.mkdir(parents=True, exist_ok=True)
@@ -167,6 +184,13 @@ def run_pipeline(
 			"rms_energy",
 			"zcr",
 			"amplitude_mean",
+			"amplitude_contour",
+			"amplitude_contour_slope",
+			"amplitude_contour_curvature",
+			"sample_entropy_contour",
+			"kurtosis_contour",
+			"crest_factor",
+			"crest_factor_position",
 			"F0",
 			"HNR",
 			"Jitter",

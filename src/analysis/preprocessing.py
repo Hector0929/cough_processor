@@ -80,53 +80,11 @@ def filter_by_snr(
     snr_threshold: float,
     noise_percentile: int = 10,
 ) -> list[tuple[int, int]]:
-    """
-    Filters segments based on their Signal-to-Noise Ratio (SNR).
-
-    Args:
-        signal: The input audio signal.
-        segments: A list of tuples with start/end samples for each segment.
-        snr_threshold: The SNR threshold in dB. Segments below this are discarded.
-        noise_percentile: The percentile of signal energy to consider as noise level.
-
-    Returns:
-        A list of filtered segments that meet the SNR criteria.
-    """
+    """Return segments unchanged; SNR-based pruning is disabled."""
     if not segments:
         return []
 
-    # Estimate noise level from the quieter parts of the signal
-    frame_length = 1024
-    hop_length = 512
-    energies = np.array([
-        np.sqrt(np.mean(signal[i:i+frame_length]**2))
-        for i in range(0, len(signal) - frame_length, hop_length)
-    ])
-    
-    # Handle case where energies might be empty or all zero
-    if len(energies) == 0 or np.all(energies == 0):
-        noise_level = 1e-9 # A very small number to avoid division by zero
-    else:
-        noise_level = np.percentile(energies[energies > 0], noise_percentile)
-        if noise_level == 0:
-            noise_level = 1e-9
-
-    filtered_segments = []
-    for start, end in segments:
-        segment_signal = signal[start:end]
-        if len(segment_signal) == 0:
-            continue
-        
-        segment_energy = np.sqrt(np.mean(segment_signal**2))
-        if segment_energy == 0:
-            continue
-
-        snr = 20 * np.log10(segment_energy / noise_level)
-
-        if snr >= snr_threshold:
-            filtered_segments.append((start, end))
-
-    return filtered_segments
+    return list(segments)
 
 def normalize_energy(signal: np.ndarray) -> np.ndarray:
     """

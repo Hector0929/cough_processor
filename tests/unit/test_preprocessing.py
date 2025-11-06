@@ -36,31 +36,23 @@ def test_segment_by_energy():
     assert abs(segments[1][0] - segment_2_start) < 500
     assert abs(segments[1][1] - segment_2_end) < 500
 
-def test_filter_by_snr():
-    """
-    Test that segments are correctly filtered based on Signal-to-Noise Ratio (SNR).
-    """
-    # Arrange
+def test_filter_by_snr_preserves_segments():
+    """Previously filtered segments should now pass through unchanged."""
     sample_rate = 16000
-    # Create a signal with a noisy background
     noise = np.random.randn(sample_rate) * 0.1
     signal = noise.copy()
 
-    # Create two segments: one with high SNR, one with low SNR
     high_snr_segment = (int(0.1 * sample_rate), int(0.3 * sample_rate))
     low_snr_segment = (int(0.6 * sample_rate), int(0.8 * sample_rate))
-    
-    signal[high_snr_segment[0]:high_snr_segment[1]] += 1.0 # Strong signal
-    signal[low_snr_segment[0]:low_snr_segment[1]] += 0.15 # Weak signal, barely above noise
+
+    signal[high_snr_segment[0]:high_snr_segment[1]] += 1.0
+    signal[low_snr_segment[0]:low_snr_segment[1]] += 0.01
 
     all_segments = [high_snr_segment, low_snr_segment]
-    
-    # Act
-    filtered_segments = preprocessing.filter_by_snr(signal, all_segments, snr_threshold=10.0) # Use a more realistic threshold
 
-    # Assert
-    assert len(filtered_segments) == 1
-    assert filtered_segments[0] == high_snr_segment
+    filtered_segments = preprocessing.filter_by_snr(signal, all_segments, snr_threshold=30.0)
+
+    assert filtered_segments == all_segments
 
 def test_normalize_energy():
     """
